@@ -1,5 +1,22 @@
 import { formatPrice } from "../script/usefull-utils/money.js";
 
+const assetBasePath = typeof window !== 'undefined'
+  && window.location.pathname.includes('/pages/')
+  ? '../'
+  : '';
+
+function resolveAssetPath(path) {
+  if (!path) {
+    return path;
+  }
+
+  if (path.startsWith('http') || path.startsWith('/') || path.startsWith('../')) {
+    return path;
+  }
+
+  return `${assetBasePath}${path}`;
+}
+
 export function getProduct(productId){
     let matchingProduct;
     
@@ -21,6 +38,7 @@ class Product{
   constructor(productDetails){
     this.id = productDetails.id;
     this.image = productDetails.image;
+    this.image = resolveAssetPath(productDetails.image);
     this.name = productDetails.name;
     this.rating = productDetails.rating;
     this.priceCents = productDetails.priceCents;
@@ -28,6 +46,7 @@ class Product{
 
   getStarUrl(){
     return `images/ratings/rating-${this.rating.stars * 10}.png`;
+    return resolveAssetPath(`images/ratings/rating-${this.rating.stars * 10}.png`);
   }
 
   getPrice(){
@@ -46,6 +65,7 @@ class Clothing extends Product{
   constructor(productDetails){
     super(productDetails);  //the super() function is used inside a child class constructor to call the constructor of its parent class.
     this.sizeChartLink = productDetails.sizeChartLink;
+    this.sizeChartLink = resolveAssetPath(productDetails.sizeChartLink);
   }
 
   extraInfoHTML(){
@@ -63,8 +83,10 @@ class Appliance extends Product{
 
   constructor(productDetails){
     super(productDetails);
-    this.instructionLink = productDetails.instructionLink;
-    this.warrantyLink = productDetails.warrantyLink;
+    // this.instructionLink = productDetails.instructionLink;
+    // this.warrantyLink = productDetails.warrantyLink;
+    this.instructionLink = resolveAssetPath(productDetails.instructionLink);
+    this.warrantyLink = resolveAssetPath(productDetails.warrantyLink);
   }
 
   extraInfoHTML(){
